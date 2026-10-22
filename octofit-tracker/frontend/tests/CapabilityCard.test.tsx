@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { getJson } from '../src/api/client.js';
 import { CapabilityCard } from '../src/components/CapabilityCard.js';
 
 describe('CapabilityCard', () => {
@@ -16,7 +17,7 @@ describe('CapabilityCard', () => {
       <CapabilityCard
         title="Activities"
         description="Track activities."
-        endpoint="/api/activities"
+        loadData={() => getJson<Record<string, unknown>>('/api/activities')}
         dataKey="activities"
         emptyMessage="No activities yet."
         renderItem={(activity: string) => activity}

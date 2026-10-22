@@ -1,16 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { getJson } from '../api/client.js';
 
 type Props<T> = {
   title: string;
   description: string;
-  endpoint: string;
+  loadData: () => Promise<Record<string, unknown>>;
   dataKey: string;
   emptyMessage: string;
   renderItem: (item: T) => ReactNode;
 };
 
-export function CapabilityCard<T>({ title, description, endpoint, dataKey, emptyMessage, renderItem }: Props<T>) {
+export function CapabilityCard<T>({ title, description, loadData, dataKey, emptyMessage, renderItem }: Props<T>) {
   const [items, setItems] = useState<T[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +17,7 @@ export function CapabilityCard<T>({ title, description, endpoint, dataKey, empty
     let active = true;
     setItems(null);
     setError(null);
-    getJson<Record<string, unknown>>(endpoint)
+    loadData()
       .then((payload) => {
         const result = payload[dataKey];
         if (!Array.isArray(result)) throw new Error('The server returned an invalid response.');
@@ -29,7 +28,7 @@ export function CapabilityCard<T>({ title, description, endpoint, dataKey, empty
         setError(requestError instanceof Error ? requestError.message : 'Unable to load data.');
       });
     return () => { active = false; };
-  }, [dataKey, endpoint]);
+  }, [dataKey, loadData]);
 
   return <section className="card h-100"><div className="card-body">
     <h2 className="h4">{title}</h2>
