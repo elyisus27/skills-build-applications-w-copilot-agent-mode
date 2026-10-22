@@ -102,3 +102,4 @@ export async function suggestWorkouts(userEmail: string) {
 }
 
 export { User };
+// Creates an activity for an existing user and team (validated by api.contract.test.ts)
